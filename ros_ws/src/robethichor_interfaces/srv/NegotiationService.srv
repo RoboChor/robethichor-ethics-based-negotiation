@@ -1,0 +1,6 @@
+# Request
+string[] tasks
+---
+# Response
+string outcome
+int32 rounds
