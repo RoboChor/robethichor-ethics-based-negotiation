@@ -21,7 +21,7 @@ PROFILE_LOAD_PATH="/profile"
 USER_STATUS_PATH="/status"
 SET_GOAL_PATH="/goal"
 
-ROS_WS_PATH="../ros_ws/" # make the root directory as the workspace base folder
+ROS_WS_PATH="../../ros_ws/" # make the root directory as the workspace base folder
 
 start_robot() {
 
