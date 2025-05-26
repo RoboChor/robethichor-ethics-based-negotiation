@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Run this file as: ./run_usecase.bash [--force-config <N> <P>] [--wait <time>] [--names <robot1_name> <robot2_name>] [--hosts <host1> <host2>] [--ports <port1> <port2>] [--launch <true/false>]
-# Example: ./run_usecase.bash --force-config "A B C D E F G H I J" "A B C D E F G H I J" --wait 10 --names "robassistant_1" "robassistant_2" --hosts "localhost" "localhost" --ports 5000 5001 --launch true
+# Run this file as: ./run_usecase.bash [--context <airport/hospital> --force-config <N> <P>] [--wait <time>] [--names <robot1_name> <robot2_name>] [--hosts <host1> <host2>] [--ports <port1> <port2>] [--launch <true/false>]
+# Example: ./run_usecase.bash --context airport --force-config "A B C D E F G H I J" "A B C D E F G H I J" --wait 10 --names "robassistant_1" "robassistant_2" --hosts "localhost" "localhost" --ports 5000 5001 --launch true
 
 # CONFIGURATION
 ROBOT_BASE_NAME="robassistant_"
 LOG_FILE="results/results.log"
 
 # JSON files paths
-BASE_FOLDER="usecases/"
+PERSONAS_BASE_FOLDER="personas/"
 CONTEXT_FILE="context.json"
 USER_STATUS_FILE="user_status.json"
 ETHIC_PROFILES_FILE="ethic_profiles.json"
@@ -33,7 +33,7 @@ start_robot() {
     # Ros 2 launch (to launch the ros environment)
     FULL_PATH=$(pwd)
     INSTALL_PATH=$FULL_PATH"/"$ROS_WS_PATH"install/setup.bash"
-    LAUNCH_COMMAND="ros2 launch robethichor robethichor_launch.py ns:=$ROBOT_NAME port:=$PORT ethical_implication_file:=$FULL_PATH/$BASE_FOLDER$ETHICAL_IMPLICATIONS_FILENAME disposition_activation_file:=$FULL_PATH/$BASE_FOLDER$DISPOSITION_ACTIVATION_FILENAME log_output_file:=$FULL_PATH/$LOG_FILE"
+    LAUNCH_COMMAND="ros2 launch robethichor robethichor_launch.py ns:=$ROBOT_NAME port:=$PORT ethical_implication_file:=$FULL_PATH/$ETHICAL_IMPLICATIONS_FILENAME disposition_activation_file:=$FULL_PATH/$DISPOSITION_ACTIVATION_FILENAME log_output_file:=$FULL_PATH/$LOG_FILE"
     echo "Launching command: $LAUNCH_COMMAND"
     gnome-terminal -- bash -c ". $INSTALL_PATH; $LAUNCH_COMMAND; exec bash"
     sleep 3
@@ -41,20 +41,22 @@ start_robot() {
 
 configure_robot() {
 
-    local ROBOT_NAME=$1
-    local HOST=$2
-    local PORT=$3
+    local CONTEXT=$1
 
-    local USER_LABEL=$4
+    local ROBOT_NAME=$2
+    local HOST=$3
+    local PORT=$4
+
+    local USER_LABEL=$5
 
     echo "------ Configuring $ROBOT_NAME for user $USER_LABEL------"
 
     # JSON file read
-    ETHIC_PROFILES=$(cat $BASE_FOLDER$USER_LABEL"/"$ETHIC_PROFILES_FILE)
-    USER_STATUS=$(cat $BASE_FOLDER$USER_LABEL"/"$USER_STATUS_FILE)
+    ETHIC_PROFILES=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/"$ETHIC_PROFILES_FILE)
+    USER_STATUS=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/"$USER_STATUS_FILE)
 
     # Json sent as messages in topics should be escaped
-    CONTEXT=$(cat $BASE_FOLDER$USER_LABEL"/"$CONTEXT_FILE | jq -c .)
+    CONTEXT=$(cat $CONTEXT"/"$CONTEXT_FILE | jq -c .)
 
     # Connector service configuration
     CONNECTOR_BASEURL="http://$HOST:$PORT"
@@ -77,21 +79,23 @@ configure_robot() {
 }
 
 start_mission() {
+    local CONTEXT=$1
 
-    local ROBOT_NAME=$1
-    local HOST=$2
-    local PORT=$3
+    local ROBOT_NAME=$2
+    local HOST=$3
+    local PORT=$4
 
-    local USER_LABEL=$4
-    local NEGOTIATING_AGAINST=$5
+    local USER_LABEL=$5
+    local NEGOTIATING_AGAINST=$6
 
     echo "Starting mission execution..."
 
-    GOAL=$(cat $BASE_FOLDER$USER_LABEL"/"$GOAL_FILE | jq --arg user "$USER_LABEL" --arg against "$NEGOTIATING_AGAINST" '.goal += " (User: " + $user + ", Negotiating against: " + $against + ")"')
+    GOAL=$(cat $CONTEXT"/"$GOAL_FILE | jq --arg user "$USER_LABEL" --arg against "$NEGOTIATING_AGAINST" '.goal += " (User: " + $user + ", Negotiating against: " + $against + ")"')
 
     curl -X POST http://$HOST:$PORT$SET_GOAL_PATH -H "Content-Type: application/json" -d "$GOAL"
 }
 
+CONTEXT="airport"
 
 USER_1=(A B C D E F G H I J)
 USER_2=(A B C D E F G H I J)
@@ -111,6 +115,11 @@ LAUNCH=false
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
+    --context)
+      shift
+      CONTEXT=$1
+      shift
+      ;;
     --force-config)
       shift
       USER_1=($1)
@@ -171,16 +180,16 @@ for U1 in "${USER_1[@]}"; do
             echo "Running simulation for $U1 against $U2"
 
             # First robot configuration
-            configure_robot $R1_NAME $R1_HOST $R1_PORT $U1
+            configure_robot $CONTEXT $R1_NAME $R1_HOST $R1_PORT $U1
 
             # Second robot configuration
-            configure_robot $R2_NAME $R2_HOST $R2_PORT $U2
+            configure_robot $CONTEXT $R2_NAME $R2_HOST $R2_PORT $U2
 
             sleep 2
 
             # Starts the mission (and the negotiation) for both robots
-            start_mission $R1_NAME $R1_HOST $R1_PORT $U1 $U2
-            start_mission $R2_NAME $R2_HOST $R2_PORT $U2 $U1
+            start_mission $CONTEXT $R1_NAME $R1_HOST $R1_PORT $U1 $U2
+            start_mission $CONTEXT $R2_NAME $R2_HOST $R2_PORT $U2 $U1
 
             sleep $WAIT_TIME
         fi
