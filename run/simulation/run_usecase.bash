@@ -53,7 +53,8 @@ configure_robot() {
 
     # JSON file read
     ETHIC_PROFILES=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/"$ETHIC_PROFILES_FILE)
-    USER_STATUS=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/"$USER_STATUS_FILE)
+    # USER_STATUS=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/"$USER_STATUS_FILE)
+    USER_STATUS=$(cat $PERSONAS_BASE_FOLDER$USER_LABEL"/user_status_"$CONTEXT".json")
 
     # Json sent as messages in topics should be escaped
     CONTEXT=$(cat $CONTEXT"/"$CONTEXT_FILE | jq -c .)

@@ -1,5 +1,5 @@
 {
-    "woman": ["d1"],
+    "injured": ["d1"],
     "pregnant": ["d2"],
     "prenatal_care": ["d6"],
     "infant_care": ["d4"],
@@ -17,6 +17,13 @@
     "is_lost": ["d10"],
     "rushing_to_flight": ["d11"],
     "unaccompanied_minor": ["d5"],
-    "unseen_emergency": ["d11"],
-    "medically_unfit": ["d6"]
+    "unseen_time_emergency": ["d11"],
+    "medically_unfit": ["d6"],
+    "emotional_distress": ["d14"],
+    "generic_medical_needs": ["d6"],
+    "anxiety": ["d8"],
+    "accompanied_by_dependent": ["d13"],
+    "post_op_care": ["d17"],
+    "urgent_diagnostic_need": ["d16"],
+    "infectious_symptoms": ["d15"]
 }
