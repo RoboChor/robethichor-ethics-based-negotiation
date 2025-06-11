@@ -7,7 +7,7 @@
   "disabled": false,
   "age_related_health_issues": false,
   "flight_anxiety": false,
-  "crowd_stress": false,
+  "crowd_stress": true,
   "travelling_with_disabled_companion": false,
   "travelling_with_elderly_companion": false,
   "travelling_with_pets": false,
@@ -20,10 +20,10 @@
   "unseen_time_emergency": false,
   "medically_unfit": false,
   "emotional_distress": true,
-  "generic_medical_needs": false,
-  "anxiety": false,
+  "generic_medical_needs": true,
+  "anxiety": true,
   "accompanied_by_dependent": true,
-  "post_op_care": false,
+  "post_op_care": true,
   "urgent_diagnostic_need": false,
   "infectious_symptoms": false
 }

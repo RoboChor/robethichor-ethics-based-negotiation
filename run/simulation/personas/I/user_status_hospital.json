@@ -20,10 +20,10 @@
   "unseen_time_emergency": false,
   "medically_unfit": false,
   "emotional_distress": true,
-  "generic_medical_needs": false,
+  "generic_medical_needs": true,
   "anxiety": false,
-  "accompanied_by_dependent": true,
+  "accompanied_by_dependent": false,
   "post_op_care": false,
-  "urgent_diagnostic_need": false,
-  "infectious_symptoms": false
+  "urgent_diagnostic_need": true,
+  "infectious_symptoms": true
 }

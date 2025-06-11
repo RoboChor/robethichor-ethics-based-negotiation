@@ -1,7 +1,7 @@
 {
   "injured": true,
   "pregnant": true,
-  "prenatal_care": false,
+  "prenatal_care": true,
   "infant_care": false,
   "elderly": false,
   "disabled": false,

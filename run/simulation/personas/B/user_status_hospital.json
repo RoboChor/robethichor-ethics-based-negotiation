@@ -5,7 +5,7 @@
   "infant_care": false,
   "elderly": true,
   "disabled": false,
-  "age_related_health_issues": false,
+  "age_related_health_issues": true,
   "flight_anxiety": false,
   "crowd_stress": false,
   "travelling_with_disabled_companion": false,

@@ -5,7 +5,7 @@
   "infant_care": false,
   "elderly": true,
   "disabled": false,
-  "age_related_health_issues": false,
+  "age_related_health_issues": true,
   "flight_anxiety": false,
   "crowd_stress": false,
   "travelling_with_disabled_companion": false,
@@ -25,5 +25,5 @@
   "accompanied_by_dependent": false,
   "post_op_care": false,
   "urgent_diagnostic_need": false,
-  "infectious_symptoms": false
+  "infectious_symptoms": true
 }
