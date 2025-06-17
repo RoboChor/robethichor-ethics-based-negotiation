@@ -26,11 +26,14 @@ towards-uncertainty-aware-bts
     |   |   generate_test_cases.py          # Test cases generation script
     |   └---test_cases                      # Test cases used in the paper
     └---simulation
+        |   disposition_activation.json     # Scenario-related disposition activation configuration
+        |   echical_implications.json       # Scenario-related task ethical implication model
         |   run_usecase.bash                # Script for running airport negotiation scenarios
-        └---usecases
-            |   disposition_activation.json # Scenario-related disposition activation configuration
-            |   echical_implications.json   # Scenario-related task ethical implication model
-            |   personas.xlsx               # Personas description and ground thruth
+        ├---airport
+        ├---hospital
+        └---personas
+            |   personas.pdf                # Personas description
+            |   ground_truth.xlsx           # Ground thruth expected data and negotiations outcome observation
             └---[A-J]                       # Personas profiles and status implementation
 ```
 
@@ -41,8 +44,8 @@ Raw data obtained from experiments are contained in the `results/` folder as a s
 - `ping_results.txt` contains the results of ping messages sent during the experimentation to monitor the network latency for robot-to-robot messaging
 - `scalability-offrobot.log` contains the logged negotiation results for the scalability experiments in the _off-robot_ setting
 - `scalability-onrobot.log` contains the logged negotiation results for the scalability experiments in the _on-robot_ setting
-- `simulation-offrobot.log` contains the logged negotiation results for the negotiation scenarios in the _off-robot_ setting
-- `simulation-onrobot.log` contains the logged negotiation results for the negotiation scenarios in the _on-robot_ setting
+- `simulation-[airport/hospital]-offrobot.log` contains the logged negotiation results for the negotiation scenarios in the airport and hospital context in the _off-robot_ setting
+- `simulation-[airport/hospital]-onrobot.log` contains the logged negotiation results for the negotiation scenarios in the airport and hospital context in the _on-robot_ setting
 
 ### Data analysis
 Log analysis and results are contained in the `analysis/` folder as a set of Jupyter Notebook files.
@@ -69,7 +72,7 @@ Paper reference: Section 7.2, description of Table 2.
 #### Log comparison
 `log_comparison.ipynb` compares the logs obtained in the simulated scenarios for results consistency.
 
-**Result logs analysed:** `simulation-offrobot.log`, `simulation-onrobot.log`.
+**Result logs analysed:** `simulation-airport-offrobot.log`, `simulation-airport-onrobot.log`, `simulation-hospital-offrobot.log`, `simulation-hospital-onrobot.log`.
 
 **Paper reference:** Section 7.1, comments on negotiation results.
 
@@ -90,7 +93,7 @@ Paper reference: Section 7.2, description of Table 2.
 #### Simulation analysis
 `simulation_analysis.ipynb` contains the analysis of the results of the negotiation scenarios.
 
-**Result logs analysed:** `simulation-offrobot.log` and `simulation-onrobot.log`.
+**Result logs analysed:** `simulation-airport-offrobot.log`, `simulation-airport-onrobot.log`, `simulation-hospital-offrobot.log`, `simulation-hospital-onrobot.log`.
 
 **Paper reference:** Section 7.1, Figure 5 and 6.
 
@@ -132,13 +135,13 @@ colcon build
 ```
 
 > [!IMPORTANT]
-> RobEthiChor must be deployed on the machine that will execute it. Clone/move the `ros_ws/` folder on the robot before building it to test the _on-robot_ deployment.
+> RobEthiChor must be deployed on the machine that will execute it. To test the _on-robot_ deployment, clone the repository or move the `ros_ws/` folder on the robot before installing dependencies and building the ROS packages.
 >
-> Alternatively, RobEthiChor can be build locally and then moved on the target machine (e.g., if dev-tools are not available). In this case, move the whole workspace folder after running `colcon build` locally:
+> Alternatively, RobEthiChor can be built locally and then moved on the target machine (e.g., if dev-tools are not available). In this case, move the whole workspace folder after running `colcon build` locally:
 > ```
 > scp . user@host:/path/to/ros_ws
 > ```
-> Then, move into the ros_ws folder in the target machine and reinstall the dependencies using Rosdep (install and init if required as shown above):
+> Then, `cd` into the moved `ros_ws/` folder in the target machine and reinstall the dependencies using Rosdep (install and init if required as shown above):
 > ```
 > sudo apt-get update
 > rosdep install --from-paths src -y --ignore-src
@@ -157,7 +160,7 @@ Configuration and running facilities can be found in the `simulation/` folder.
 ```
 cd ../run/simulation
 chmod +x run_usecase.bash
-./run_usecase.bash --launch true
+./run_usecase.bash --launch true --context <airport/hospital>
 ```
 Two terminals will open, each for one of the two robots. Log files will be stored inside the newly created `simulation/results/` folder.
 
@@ -166,8 +169,8 @@ Two terminals will open, each for one of the two robots. Log files will be store
 Deploy RobEthiChor on the two negotiating robots as explained above, and copy the `usecases/disposition_activation.json` and `usecases/ethical_implications.json` files inside the robot's `ros_ws/` folder:
 ```
 cd ../run/simulation
-scp usecases/disposition_activation.json user@host:/path/to/ros_ws
-scp usecases/ethical_implications.json user@host:/path/to/ros_ws
+scp disposition_activation.json user@host:/path/to/ros_ws
+scp ethical_implications.json user@host:/path/to/ros_ws
 ```
 
 Then, from the robot's `ros_ws/` folder, run:
@@ -177,7 +180,7 @@ ros2 launch robethichor robethichor_launch.py ns:=[ROBOT_NAME] port:=[ROBOT_PORT
 ```
 
 > [!IMPORTANT]
-> Substitute `ROBOT_NAME` and `ROBOT_PORT` with the name of each of the robots (e.g., robassistant_1 and robassistant_2) and the robot's connector port (e.g., 5000 and 5001)
+> Substitute `ROBOT_NAME` and `ROBOT_PORT` with the name of each of the robots (e.g., _robassistant_1_ and _robassistant_2_) and the robot's connector port (e.g., _5000_ and _5001_)
 
 Finally, run the scenarios from the computer:
 ```
@@ -193,6 +196,7 @@ Log files will be stored inside the newly created `results/` folder within the r
 Configuration and running facilities can be found in the `scalability_experiments/` folder.
 
 > [!NOTE]
+> Test cases used for running experiments are already contained into the repository.
 > To generate new test cases, use the `generate_test_cases.py` python script:
 > ```
 > python3 generate_test_cases --n <N> --p <P> --c <NUMBER_OF_CASES>
@@ -207,15 +211,15 @@ chmod +x run_experiment.bash
 Two terminals will open, each for one of the two robots. Log files will be stored inside the newly created `scalability_experiments/results/` folder.
 
 > [!NOTE]
-> The script `run_experiment.bash` will prompt, befor running each configuration, the wait times between each negotiation so to avoid overlapping different negotiations.
+> The script `run_experiment.bash` will prompt, before running each configuration, the wait times between each negotiation so to avoid overlapping different negotiations.
 
 ##### *on-robot* scenario:
 
 Deploy RobEthiChor on the two negotiating robots as explained above, and copy the `test_cases/disposition_activation.json` and `test_cases/ethical_implications.json` files inside the robot's `ros_ws/` folder:
 ```
 cd ../run/simulation
-scp scalability_experiments/disposition_activation.json user@host:/path/to/ros_ws
-scp scalability_experiments/ethical_implications.json user@host:/path/to/ros_ws
+scp scalability_experiments/test_cases/disposition_activation.json user@host:/path/to/ros_ws
+scp scalability_experiments/test_cases/ethical_implications.json user@host:/path/to/ros_ws
 ```
 
 Then, from the robot's `ros_ws/` folder, run:
@@ -225,7 +229,7 @@ ros2 launch robethichor robethichor_launch.py ns:=[ROBOT_NAME] port:=[ROBOT_PORT
 ```
 
 > [!IMPORTANT]
-> Substitute `ROBOT_NAME` and `ROBOT_PORT` with the name of each of the robots (e.g., robassistant_1 and robassistant_2) and the robot's connector port (e.g., 5000 and 5001)
+> Substitute `ROBOT_NAME` and `ROBOT_PORT` with the name of each of the robots (e.g., _robassistant_1_ and _robassistant_2_) and the robot's connector port (e.g., _5000_ and _5001_)
 
 Finally, run the scenarios from the computer:
 ```
