@@ -1,6 +1,8 @@
 # RobEthiChor: automated context-aware ethics-based negotiation for autonomous robots
 Replication package for the paper **RobEthiChor: automated context-aware ethics-based negotiation for autonomous robots**
 
+[![DOI](https://zenodo.org/badge/936173775.svg)](https://doi.org/10.5281/zenodo.17449922)
+
 ## Authors
 This study has been designed, developed, and reported by the following investigators:
 - Mashal Afzal Memon (University of L'Aquila, Italy)
