@@ -47,56 +47,18 @@ Raw data obtained from experiments are contained in the `results/` folder as a s
 - `simulation-[airport/hospital]-offrobot.log` contains the logged negotiation results for the negotiation scenarios in the airport and hospital context in the _off-robot_ setting
 - `simulation-[airport/hospital]-onrobot.log` contains the logged negotiation results for the negotiation scenarios in the airport and hospital context in the _on-robot_ setting
 
+More info in the [results README](results/README.md) file.
+
 ### Data analysis
-Log analysis and results are contained in the `analysis/` folder as a set of Jupyter Notebook files.
+Log analysis and results are contained in the `analysis/` folder as a set of Jupyter Notebook files:
 
-> [!NOTE]
-> Outputs are attached within the files: it is no needed to run them to read the analysis results.
->
-> To run again analysis files (even though not required), the following dependencies are required (Conda environment management is recommended):
-> - Python 3
-> - Jupyter
-> - Pandas
-> - Numpy
-> - Matplotlib
-> - Seaborn
-> - Sklearn
+- `deployment-comparison.ipynb` contains a comparative analysis of the negotiation times measured for the scalability experiments in the _on-robot_ and _off-robot_ with profiles containing up to 100 dispositions.
+- `log_comparison.ipynb` compares the logs obtained in the simulated scenarios for results consistency.
+- `ping_analysis.py` extracts overall stats for the network latency.
+- `scalability-offrobot-analysis.ipynb` and `scalability-onrobot-analysis.ipynb` contain the analysis on the performance scalability of the negotiation approach.
+- `simulation_analysis.ipynb` contains the analysis of the results of the negotiation scenarios.
 
-#### Deployment comparison
-`deployment-comparison.ipynb` contains a comparative analysis of the negotiation times measured for the scalability experiments in the _on-robot_ and _off-robot_ with profiles containing up to 100 dispositions.
-
-**Result logs analysed:** `scalability-offrobot.log`, `scalability-onrobot.log`.
-
-Paper reference: Section 7.2, description of Table 2.
-
-#### Log comparison
-`log_comparison.ipynb` compares the logs obtained in the simulated scenarios for results consistency.
-
-**Result logs analysed:** `simulation-airport-offrobot.log`, `simulation-airport-onrobot.log`, `simulation-hospital-offrobot.log`, `simulation-hospital-onrobot.log`.
-
-**Paper reference:** Section 7.1, comments on negotiation results.
-
-#### Ping analysis
-`ping_analysis.py` extracts overall stats for the network latency.
-
-**Result logs analysed:** `ping_results.txt`.
-
-**Paper reference:** Section 7, experimentation setting description.
-
-#### Scalability analysis
-`scalability-offrobot-analysis.ipynb` and `scalability-onrobot-analysis.ipynb` contain the analysis on the performance scalability of the negotiation approach.
-
-**Result logs analysed:** `scalability-offrobot.log` and `scalability-onrobot.log`.
-
-**Paper reference:** Section 7.2, Figure 7, 8, 9, and 10, regression analysis commentary.
-
-#### Simulation analysis
-`simulation_analysis.ipynb` contains the analysis of the results of the negotiation scenarios.
-
-**Result logs analysed:** `simulation-airport-offrobot.log`, `simulation-airport-onrobot.log`, `simulation-hospital-offrobot.log`, `simulation-hospital-onrobot.log`.
-
-**Paper reference:** Section 7.1, Figure 5 and 6.
-
+More info in the [analysis README](analysis/README.md) file.
 
 ## Experiment replication
 
